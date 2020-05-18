@@ -30,11 +30,12 @@ EXCLUDE_FROM_PACKAGES = ['django.conf.project_template',
 
 # Dynamically calculate the version based on django.VERSION.
 version = __import__('django').get_version()
+nimbis_version = '1'
 
 
 setup(
     name='Django',
-    version=version,
+    version='{}+nimbis.{}'.format(version, nimbis_version),
     url='https://www.djangoproject.com/',
     author='Django Software Foundation',
     author_email='foundation@djangoproject.com',

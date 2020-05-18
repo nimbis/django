@@ -206,7 +206,7 @@ def truncate_name(identifier, length=None, hash_len=4):
     if length is None or len(name) <= length:
         return identifier
 
-    digest = hashlib.md5(force_bytes(name)).hexdigest()[:hash_len]
+    digest = hashlib.md5(force_bytes(name), usedforsecurity=False).hexdigest()[:hash_len]
     return '%s%s%s' % ('%s"."' % namespace if namespace else '', name[:length - hash_len], digest)
 
 

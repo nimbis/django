@@ -521,7 +521,7 @@ class MD5PasswordHasher(BasePasswordHasher):
     def encode(self, password, salt):
         assert password is not None
         assert salt and '$' not in salt
-        hash = hashlib.md5(force_bytes(salt + password)).hexdigest()
+        hash = hashlib.md5(force_bytes(salt + password), usedforsecurity=False).hexdigest()
         return "%s$%s$%s" % (self.algorithm, salt, hash)
 
     def verify(self, password, encoded):
@@ -596,7 +596,7 @@ class UnsaltedMD5PasswordHasher(BasePasswordHasher):
 
     def encode(self, password, salt):
         assert salt == ''
-        return hashlib.md5(force_bytes(password)).hexdigest()
+        return hashlib.md5(force_bytes(password), usedforsecurity=False).hexdigest()
 
     def verify(self, password, encoded):
         if len(encoded) == 37 and encoded.startswith('md5$$'):

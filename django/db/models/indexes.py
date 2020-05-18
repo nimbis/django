@@ -89,7 +89,7 @@ class Index(object):
         Generate a 32-bit digest of a set of arguments that can be used to
         shorten identifying names.
         """
-        h = hashlib.md5()
+        h = hashlib.md5(usedforsecurity=False)
         for arg in args:
             h.update(force_bytes(arg))
         return h.hexdigest()[:6]
