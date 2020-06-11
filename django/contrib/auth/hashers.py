@@ -521,7 +521,18 @@ class MD5PasswordHasher(BasePasswordHasher):
     def encode(self, password, salt):
         assert password is not None
         assert salt and '$' not in salt
-        hash = hashlib.md5(force_bytes(salt + password), usedforsecurity=False).hexdigest()
+
+        # Current stable version of python does not have FIPS support for hashlib. Passing
+        # usedforsecurity=False only works in RHEL versions of python, and is needed to
+        # run this code on hardened RHEL machines. The try-except block will not be needed once
+        # the following issue is resolved:
+        #
+        # https://bugs.python.org/issue9216
+        try:
+            hash = hashlib.md5(force_bytes(salt + password), usedforsecurity=False).hexdigest()
+        except TypeError:
+            hash = hashlib.md5(force_bytes(salt + password)).hexdigest()
+
         return "%s$%s$%s" % (self.algorithm, salt, hash)
 
     def verify(self, password, encoded):
@@ -596,7 +607,17 @@ class UnsaltedMD5PasswordHasher(BasePasswordHasher):
 
     def encode(self, password, salt):
         assert salt == ''
-        return hashlib.md5(force_bytes(password), usedforsecurity=False).hexdigest()
+
+        # Current stable version of python does not have FIPS support for hashlib. Passing
+        # usedforsecurity=False only works in RHEL versions of python, and is needed to
+        # run this code on hardened RHEL machines. The try-except block will not be needed once
+        # the following issue is resolved:
+        #
+        # https://bugs.python.org/issue9216
+        try:
+            return hashlib.md5(force_bytes(password), usedforsecurity=False).hexdigest()
+        except TypeError:
+            return hashlib.md5(force_bytes(password), usedforsecurity=False).hexdigest()
 
     def verify(self, password, encoded):
         if len(encoded) == 37 and encoded.startswith('md5$$'):
