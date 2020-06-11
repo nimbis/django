@@ -20,8 +20,8 @@ def make_template_fragment_key(fragment_name, vary_on=None):
     #
     # https://bugs.python.org/issue9216
     try:
-	    args = hashlib.md5(force_bytes(key), usedforsecurity=False)
-	except TypeError:
-	    args = hashlib.md5(force_bytes(key))
+        args = hashlib.md5(force_bytes(key), usedforsecurity=False)
+    except TypeError:
+        args = hashlib.md5(force_bytes(key))
 
     return TEMPLATE_FRAGMENT_KEY_TEMPLATE % (fragment_name, args.hexdigest())
