@@ -206,7 +206,17 @@ def truncate_name(identifier, length=None, hash_len=4):
     if length is None or len(name) <= length:
         return identifier
 
-    digest = hashlib.md5(force_bytes(name), usedforsecurity=False).hexdigest()[:hash_len]
+    # Current stable version of python does not have FIPS support for hashlib. Passing
+    # usedforsecurity=False only works in RHEL versions of python, and is needed to
+    # run this code on hardened RHEL machines. The try-except block will not be needed once
+    # the following issue is resolved:
+    #
+    # https://bugs.python.org/issue9216
+    try:
+        digest = hashlib.md5(force_bytes(name), usedforsecurity=False).hexdigest()[:hash_len]
+    except TypeError:
+        digest = hashlib.md5(force_bytes(name)).hexdigest()[:hash_len]
+
     return '%s%s%s' % ('%s"."' % namespace if namespace else '', name[:length - hash_len], digest)
 
 
