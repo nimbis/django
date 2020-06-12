@@ -617,7 +617,7 @@ class UnsaltedMD5PasswordHasher(BasePasswordHasher):
         try:
             return hashlib.md5(force_bytes(password), usedforsecurity=False).hexdigest()
         except TypeError:
-            return hashlib.md5(force_bytes(password), usedforsecurity=False).hexdigest()
+            return hashlib.md5(force_bytes(password)).hexdigest()
 
     def verify(self, password, encoded):
         if len(encoded) == 37 and encoded.startswith('md5$$'):
